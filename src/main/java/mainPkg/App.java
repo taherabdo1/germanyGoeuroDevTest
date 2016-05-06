@@ -1,6 +1,7 @@
 package mainPkg;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
@@ -35,7 +36,8 @@ public class App {
 			URL url = new URL(
 					"http://api.goeuro.com/api/v2/position/suggest/en/"
 							+ cityName);
-			outCSVFile = new File(cityName+".csv");
+			outCSVFile = new File(cityName + ".csv");
+		
 			pw = new PrintWriter(outCSVFile);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
@@ -50,9 +52,16 @@ public class App {
 			 */
 			ObjectMapper mapper = new ObjectMapper();
 			CityInfo[] objs = mapper.readValue(url, CityInfo[].class);
-			if(objs.length == 0)
+			if (objs.length == 0)
 				pw.print("no data recieved for this city..");
-			
+
+			// set headers
+			pw.print("_id,");
+			pw.print("Name,");
+			pw.print("Type,");
+			pw.print("Latitude,");
+			pw.println("Longitude");
+
 			for (CityInfo city : objs) {
 				pw.print(city.get_id() + ",");
 				pw.print(city.getName() + ",");
@@ -66,8 +75,10 @@ public class App {
 			pw.close();
 			conn.disconnect();
 
-		} catch (MalformedURLException e) {
-
+		} catch(FileNotFoundException e){
+			System.out.println("File is found before and opened by another process, kindly close the other process and re-run");
+		}
+		catch (MalformedURLException e) {
 			e.printStackTrace();
 
 		} catch (IOException e) {

@@ -55,7 +55,6 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<finalName>taherHassan_dev_test</finalName>
 				<configuration>
 					<archive>
 						<manifest>
